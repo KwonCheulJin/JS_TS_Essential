@@ -1,4 +1,4 @@
-import View from '../core/view';
+import View from "../core/view";
 
 export interface NewsStore {
   getAllFeeds: () => NewsFeed[];
@@ -12,11 +12,6 @@ export interface NewsStore {
   prevPage: number;
 }
 
-export interface Store {
-  currentPage: number;
-  feeds: NewsFeed[];
-}
-
 export interface News {
   readonly id: number;
   readonly time_ago: string;
@@ -27,8 +22,8 @@ export interface News {
 }
 
 export interface NewsFeed extends News {
-  readonly comments_count: number;
   readonly points: number;
+  readonly comments_count: number;
   read?: boolean;
 }
 
@@ -44,4 +39,5 @@ export interface NewsComment extends News {
 export interface RouteInfo {
   path: string;
   page: View;
+  params: RegExp | null;
 }

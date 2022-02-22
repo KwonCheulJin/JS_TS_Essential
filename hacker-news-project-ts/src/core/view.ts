@@ -5,10 +5,10 @@ export default abstract class View {
   private htmlList: string[];
 
   constructor(containerId: string, template: string) {
-    const containerElement = document.getElementById(containerId);
+    const containerElement: HTMLElement | null = document.getElementById(containerId);
 
     if (!containerElement) {
-      throw '최상위 컨테이너가 없어 UI를 진행하지 못합니다.';
+      throw "최상위 컨테이너가 없어 UI를 진행하지 못합니다.";
     }
 
     this.container = containerElement;
@@ -27,7 +27,7 @@ export default abstract class View {
   }
 
   protected getHtml(): string {
-    const snapshot = this.htmlList.join('');
+    const snapshot = this.htmlList.join("");
     this.clearHtmlList();
     return snapshot;
   }
@@ -40,5 +40,5 @@ export default abstract class View {
     this.htmlList = [];
   }
 
-  abstract render(): void;
+  abstract render(...params: string[]): void;
 }
