@@ -1,7 +1,7 @@
-import View from '../core/view';
-import { NewsFeedApi } from '../core/api';
-import { NewsFeed, NewsStore } from '../types';
-import { NEWS_URL } from '../config';
+import View from "../core/view";
+import { NewsFeedApi } from "../core/api";
+import { NewsFeed, NewsStore } from "../types";
+import { NEWS_URL } from "../config";
 
 const template: string = `
 <div class="bg-gray-600 min-h-screen">
@@ -35,19 +35,26 @@ export default class NewsFeedView extends View {
 
     this.store = store;
     this.api = new NewsFeedApi(NEWS_URL);
-
-    if (!this.store.hasFeeds) {
-      this.store.setFeeds(this.api.getData());
-    }
   }
 
-  render(): void {
-    this.store.currentPage = Number(location.hash.substring(7) || 1);
+  render = (page: string = "1"): void => {
+    this.store.currentPage = Number(page);
 
+    if (!this.store.hasFeeds) {
+      this.api.getDataWithPromise((feeds: NewsFeed[]) => {
+        this.store.setFeeds(feeds);
+        this.renderView();
+      });
+    }
+
+    this.renderView();
+  };
+
+  renderView = () => {
     for (let i = (this.store.currentPage - 1) * 10; i < this.store.currentPage * 10; i++) {
       const { id, title, comments_count, user, points, time_ago, read } = this.store.getFeed(i);
       this.addHtml(`
-      <div class="p-6 ${read ? 'bg-red-500' : 'bg-white'} mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
+      <div class="p-6 ${read ? "bg-red-500" : "bg-white"} mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
         <div class="flex">
           <div class="flex-auto">
             <a href="#/show/${id}">${title}</a>  
@@ -66,10 +73,10 @@ export default class NewsFeedView extends View {
       </div> 
     `);
     }
-    this.setTemplateData('news_feed', this.getHtml());
-    this.setTemplateData('prev_page', String(this.store.prevPage));
-    this.setTemplateData('next_page', String(this.store.nextPage));
+    this.setTemplateData("news_feed", this.getHtml());
+    this.setTemplateData("prev_page", String(this.store.prevPage));
+    this.setTemplateData("next_page", String(this.store.nextPage));
 
     this.updateView();
-  }
+  };
 }
